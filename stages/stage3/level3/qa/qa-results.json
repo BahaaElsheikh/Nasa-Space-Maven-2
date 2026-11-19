@@ -1,0 +1,182 @@
+[
+ {
+  "test": "1. Loads without JS errors",
+  "status": "PASS",
+  "detail": "errors=[]"
+ },
+ {
+  "test": "1b. Transmission phase + Viking 1 intro",
+  "status": "PASS",
+  "detail": ""
+ },
+ {
+  "test": "1c. Viking 1 avatar image present",
+  "status": "PASS",
+  "detail": ""
+ },
+ {
+  "test": "2a. START disabled before dialogue ends",
+  "status": "PASS",
+  "detail": ""
+ },
+ {
+  "test": "2. Dialogue reaches final step",
+  "status": "PASS",
+  "detail": ""
+ },
+ {
+  "test": "2b. START enabled after dialogue",
+  "status": "PASS",
+  "detail": ""
+ },
+ {
+  "test": "2c. Mission order phase reached",
+  "status": "PASS",
+  "detail": ""
+ },
+ {
+  "test": "3. 6 mission cards in pool",
+  "status": "PASS",
+  "detail": "cards=6"
+ },
+ {
+  "test": "3b. 6 ordering slots",
+  "status": "PASS",
+  "detail": "slots=6"
+ },
+ {
+  "test": "3c. Progress shows 0/6",
+  "status": "PASS",
+  "detail": ""
+ },
+ {
+  "test": "3d. Cards have images",
+  "status": "PASS",
+  "detail": ""
+ },
+ {
+  "test": "3e. Exact mission titles present",
+  "status": "PASS",
+  "detail": ""
+ },
+ {
+  "test": "4. Click-to-place works (2/6)",
+  "status": "PASS",
+  "detail": ""
+ },
+ {
+  "test": "4b. Tap placed card returns it (1/6)",
+  "status": "PASS",
+  "detail": ""
+ },
+ {
+  "test": "4c. Re-placed (2/6)",
+  "status": "PASS",
+  "detail": ""
+ },
+ {
+  "test": "5a. All 6 placed (6/6)",
+  "status": "PASS",
+  "detail": ""
+ },
+ {
+  "test": "5. Wrong order -> encouraging feedback",
+  "status": "PASS",
+  "detail": "\u2715 \u201cAnalyze Regolith for Controlled Agriculture\u201d (spot 2) \u2014 not quite! Last, we s"
+ },
+ {
+  "test": "5b. Attempts counted",
+  "status": "PASS",
+  "detail": ""
+ },
+ {
+  "test": "5c. Red slot marked",
+  "status": "PASS",
+  "detail": ""
+ },
+ {
+  "test": "6. Hint works",
+  "status": "PASS",
+  "detail": "Hint: \u201cAnalyze Regolith for Controlled Agriculture\u201d belongs "
+ },
+ {
+  "test": "6b. Hint counted",
+  "status": "PASS",
+  "detail": ""
+ },
+ {
+  "test": "6c. Reset clears sequence",
+  "status": "PASS",
+  "detail": ""
+ },
+ {
+  "test": "7. Correct order -> MISSION COMPLETE",
+  "status": "PASS",
+  "detail": ""
+ },
+ {
+  "test": "7b. Completion headline",
+  "status": "PASS",
+  "detail": ""
+ },
+ {
+  "test": "7c. Six missions listed in order",
+  "status": "PASS",
+  "detail": ""
+ },
+ {
+  "test": "7d. Score = 325 (300+50-25)",
+  "status": "PASS",
+  "detail": "score=325"
+ },
+ {
+  "test": "8. Report .txt downloads",
+  "status": "PASS",
+  "detail": "MissionFailed_Level3_MissionOrder_Report.txt"
+ },
+ {
+  "test": "9. Resume bar after reload",
+  "status": "PASS",
+  "detail": ""
+ },
+ {
+  "test": "9b. Resume restores complete screen",
+  "status": "PASS",
+  "detail": ""
+ },
+ {
+  "test": "10. Restart -> transmission, score 0",
+  "status": "PASS",
+  "detail": ""
+ },
+ {
+  "test": "11. Sound toggle",
+  "status": "PASS",
+  "detail": ""
+ },
+ {
+  "test": "12. Data integrity (6 missions, exact order)",
+  "status": "PASS",
+  "detail": ""
+ },
+ {
+  "test": "12b. All 6 card images reference real asset files",
+  "status": "PASS",
+  "detail": ""
+ },
+ {
+  "test": "13. Engine rejects swapped first pair",
+  "status": "PASS",
+  "detail": ""
+ },
+ {
+  "test": "14. Mobile renders",
+  "status": "PASS",
+  "detail": ""
+ },
+ {
+  "test": "15. Zero console/page errors overall",
+  "status": "PASS",
+  "detail": "errors=[]"
+ }
+]

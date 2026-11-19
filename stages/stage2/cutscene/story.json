@@ -1,0 +1,27 @@
+{
+  "stage": 2,
+  "title": "MISSION PREPARATION & INTERPLANETARY TRANSIT",
+  "slides": [
+    {
+      "image": "1.png",
+      "title": "CHALLENGE ROOMS COMPLETED",
+      "text": "Having mastered the Mars Sandbox, Resource Control Bay with Bahaa & Mora, and Vertical Farming Station with Hamdy & Alaa, Commander Rodaina summons you to Johnson Space Center as Co-Commander.",
+      "audio": "audio1.mp3",
+      "duration": 6000
+    },
+    {
+      "image": "2.png",
+      "title": "CLEANROOM PAYLOAD MANIFEST",
+      "text": "Launch mass is strictly constrained. Every kilogram of life support, water recycler, solar array, and scientific tooling competes for cargo capacity before the transfer vehicle can depart Earth.",
+      "audio": "audio2.mp3",
+      "duration": 6000
+    },
+    {
+      "image": "3.png",
+      "title": "VOYAGE TO CHRYSE PLANITIA",
+      "text": "The transfer vehicle ignites its engines for the 180-day crossing to Mars. Telemetry locks onto the historic 1976 Viking 1 Lander beacon at Chryse Planitia to calibrate our descent corridor.",
+      "audio": "audio3.mp3",
+      "duration": 6000
+    }
+  ]
+}

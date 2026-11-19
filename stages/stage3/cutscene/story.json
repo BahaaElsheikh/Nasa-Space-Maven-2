@@ -1,0 +1,27 @@
+{
+  "stage": 3,
+  "title": "MARS SURFACE HABITAT & OUTPOST OPERATIONS",
+  "slides": [
+    {
+      "image": "1.png",
+      "title": "ORBITAL INSERTION ACHIEVED",
+      "text": "The NPC Masr transfer vehicle enters Martian orbit! High-resolution orbital sensors scan candidate coordinates across Chryse Planitia and adjacent crater basins for safe surface touchdowns.",
+      "audio": "audio1.mp3",
+      "duration": 6000
+    },
+    {
+      "image": "2.png",
+      "title": "VIKING RECON & ICE DETECTION",
+      "text": "Robotics Specialist Nour locates the Viking lander site to benchmark subsurface ice radar readings. Initial telemetry indicates promising regolith stability and accessible water ice deposits.",
+      "audio": "audio2.mp3",
+      "duration": 6000
+    },
+    {
+      "image": "3.png",
+      "title": "ESTABLISH THE SETTLEMENT",
+      "text": "Commander Rodaina initiates descent protocol: 'MAVEN 1 paved the path. Today, we anchor humanity's first sustainable outpost on the Red Planet!' Deploy the habitat, activate MOXIE, and secure vital resources.",
+      "audio": "audio3.mp3",
+      "duration": 6000
+    }
+  ]
+}
