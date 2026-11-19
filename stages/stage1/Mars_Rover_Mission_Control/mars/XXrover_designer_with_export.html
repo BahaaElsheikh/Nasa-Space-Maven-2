@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mars Rover Workshop | Pixel-Art Edition</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Pixelify+Sans:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#183c40;--teal:#24777a;--teal2:#dceceb;--sand:#f2eadc;--paper:#fffdf8;--line:#d9d1c3;--muted:#687d7c;--orange:#c87943;--red:#b84f43;--green:#3e795b}
+*{box-sizing:border-box}body{margin:0;background:#f3f0e8;color:var(--ink);font:15px/1.55 Tahoma,Arial,sans-serif}
+header{padding:22px max(18px,calc((100vw - 1440px)/2));background:linear-gradient(115deg,#153e43,#28777a);color:#fff}
+header h1{margin:0;font-size:clamp(23px,3vw,34px)}header p{margin:5px 0 0;color:#dcebea}
+main{max-width:1440px;margin:18px auto;padding:0 16px 36px}
+.topbar{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:14px}
+.identity{display:flex;align-items:center;gap:9px;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:9px 12px;flex:1;min-width:260px}
+.identity label{font-weight:bold;white-space:nowrap}.identity input{min-width:100px;flex:1;border:1px solid var(--line);border-radius:8px;padding:9px;font:inherit;color:var(--ink)}
+.layout{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(390px,.95fr);gap:15px;align-items:start}
+.panel,.category{background:var(--paper);border:1px solid var(--line);border-radius:14px;box-shadow:0 5px 18px #173f460d}
+.panel{padding:14px}.viewer{position:sticky;top:10px}
+h2{font-size:19px;margin:0 0 5px}h3{font-size:15px;margin:0}.muted{color:var(--muted);font-size:12px}
+#stage{height:440px;border-radius:12px;overflow:hidden;background:radial-gradient(ellipse at 50% 35%,#f6f0e4,#d8e1d9 72%,#c3d0c8);position:relative}
+#stage canvas{display:block;width:100%;height:100%}
+.stage-empty{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:20px;color:#55716c;pointer-events:none}
+.stage-empty strong{display:block;font-size:18px}
+.viewer-tools{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}
+button{border:1px solid var(--line);border-radius:8px;padding:9px 12px;background:#fff;color:var(--ink);font:inherit;font-weight:bold;cursor:pointer}
+button:hover{border-color:var(--teal);background:#f0f7f5}button.primary{background:var(--teal);color:#fff;border-color:var(--teal)}button.danger{color:var(--red)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:10px}
+.stat{background:#f1eee5;border-radius:9px;padding:8px}.stat span{display:block;color:var(--muted);font-size:11px}.stat b{font-size:18px}
+.catalog-head{display:flex;align-items:end;justify-content:space-between;gap:10px;margin:2px 0 10px}
+.category{margin-bottom:10px;overflow:hidden}.cathead{display:flex;gap:10px;align-items:center;background:#f8f5ed;padding:11px;border-bottom:1px solid var(--line)}
+.cat-icon{width:42px;height:42px;border-radius:9px;background:#e1eeea;display:grid;place-items:center;font-size:23px;flex:none}
+.opts{padding:10px;display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:8px}
+.opt{border:1px solid var(--line);border-radius:10px;padding:9px;background:white;cursor:pointer;display:flex;flex-direction:column;gap:4px;min-height:112px}
+.opt.selected{border:2px solid var(--teal);padding:8px;background:#eef6f2}
+.opt .glyph{height:48px;border-radius:7px;background:linear-gradient(145deg,#edf2ec,#dce7df);display:grid;place-items:center;font-size:27px}
+.opt strong{font-size:13px}.opt small{font-size:11px;color:var(--muted)}
+.opt .meta{font-size:10px;color:#54726c;margin-top:auto}
+.selected-list{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chip{background:#e9f2ed;border:1px solid #c7dcd2;border-radius:20px;padding:4px 9px;font-size:11px;display:flex;align-items:center;gap:7px}
+.chip button{padding:0 3px;border:0;background:transparent;color:var(--red);font-size:15px}
+.result{background:#fff;border:1px solid var(--line);border-radius:10px;padding:11px;margin-top:10px}
+.status{font-weight:bold}.good{color:var(--green)}.warn{color:#9a681b}.bad{color:var(--red)}
+.ref{font-size:11px;color:var(--muted);margin-top:6px}.ref a{color:var(--teal)}
+.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+details{margin-top:8px}summary{cursor:pointer;font-weight:bold;font-size:12px}
+footer{margin-top:13px;color:var(--muted);font-size:11px}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.viewer{position:static}#stage{height:360px}}
+@media(max-width:520px){.stats{grid-template-columns:repeat(2,1fr)}.identity{flex-wrap:wrap}.identity input{flex-basis:100%}#stage{height:300px}}
+
+/* ===== NAVY + NEON PIXEL THEME (cyan / green, matches Levels 2 & 3) ===== */
+:root{--ink:#eaf4ff;--teal:#19f0ff;--teal2:#0f1a4a;--sand:#9fb4ff;--paper:#0b1233;--line:#1a8aa6;--muted:#9fb4ff;--orange:#39ff14;--red:#ff4d7a;--green:#39ff14}
+body{background-color:#070b24;background-image:radial-gradient(1.6px 1.6px at 24px 36px,#fff,transparent),radial-gradient(2px 2px at 130px 90px,#bff,transparent),radial-gradient(ellipse at 15% 0%,#16308f 0%,transparent 55%),radial-gradient(ellipse at 95% 100%,#064e6e 0%,transparent 50%);background-size:250px 210px,250px 210px,100% 100%,100% 100%;background-attachment:fixed;color:#eaf4ff;font:16px/1.55 'Fredoka',Tahoma,Arial,sans-serif}
+header{background:linear-gradient(180deg,#0e1747,#070b24);color:#eaf4ff;border-bottom:4px solid #19f0ff;box-shadow:0 4px 0 #04071a,0 6px 22px rgba(25,240,255,.3)}
+header h1,h2,h3,button.primary,.stat b{font-family:'Pixelify Sans','Fredoka',sans-serif;letter-spacing:.03em}
+header h1{color:#eaf4ff;text-shadow:3px 3px 0 #04071a,0 0 14px rgba(25,240,255,.6)}
+header p{color:#9fb4ff}
+.panel,.category{background:linear-gradient(160deg,#101b52,#080d2e);border:3px solid rgba(25,240,255,.5);border-radius:4px;box-shadow:0 0 0 2px #04071a,5px 5px 0 2px #04071a,0 0 18px rgba(25,240,255,.2)}
+h2,h3{color:#eaf4ff;text-shadow:2px 2px 0 #04071a}
+.muted{color:#9fb4ff;font-size:13px}
+#stage{background:linear-gradient(180deg,#070b24 0%,#0e1a5a 60%,#0b1a4a 100%);border:3px solid #19f0ff;border-radius:3px;box-shadow:inset 0 0 0 3px #04071a,0 0 18px rgba(25,240,255,.35);image-rendering:pixelated}
+#stage canvas{image-rendering:pixelated}
+.stage-empty{color:#eaf4ff}
+button{border:2px solid #1a8aa6;border-radius:3px;background:#0f1a4a;color:#eaf4ff;box-shadow:3px 3px 0 #04071a;min-height:40px}
+button:hover{border-color:#19f0ff;background:#1b2a6b;box-shadow:3px 3px 0 #04071a,0 0 14px rgba(25,240,255,.5)}
+button.primary{background:#0f6e06;border-color:#39ff14;color:#eaffe5;box-shadow:3px 3px 0 #04071a,0 0 12px rgba(57,255,20,.45)}
+button.primary:hover{background:#17770a}
+button.danger{color:#ff8fae;border-color:#ff4d7a}
+:focus-visible{outline:3px solid #19f0ff;outline-offset:2px}
+.identity{background:#0b1233;border:2px solid #1a8aa6;border-radius:3px}
+.identity input{background:#050818;border:2px solid #1a8aa6;border-radius:3px;color:#eaf4ff}
+.stat{background:#0f1a4a;border:2px solid #1a5f9a;border-radius:3px}
+.stat span{color:#9fb4ff;font-size:12px}.stat b{color:#19f0ff;font-size:19px}
+.cathead{background:#0f1a4a;border-bottom:2px solid #1a8aa6}
+.cat-icon{background:#050818;color:#19f0ff;border:2px solid #1a8aa6;border-radius:3px}
+.opt{background:#080d2e;border:2px solid #1a3a7a;border-radius:3px;color:#eaf4ff;min-height:180px}
+.opt:hover{border-color:#19f0ff;box-shadow:0 0 12px rgba(25,240,255,.45)}
+.opt.selected{background:#06301a;border:3px solid #39ff14;padding:8px;box-shadow:0 0 14px rgba(57,255,20,.5)}
+.opt .glyph{height:104px;background:#050818;border:2px solid #1a3a7a;border-radius:2px;color:#19f0ff;overflow:hidden;font-size:30px}
+.opt .glyph img{width:100%;height:100%;object-fit:contain;display:block;image-rendering:pixelated}
+.opt strong{font-size:15px}.opt small{color:#b6c6f5;font-size:13px}.opt .meta{color:#19f0ff;font-size:13px}
+.chip{background:#06301a;border:2px solid #39ff14;border-radius:3px;color:#d4ffc4;font-size:13px}
+.chip button{box-shadow:none;background:transparent;border:0;min-height:0;color:#ff8fae}
+.result{background:#080d2e;border:2px solid #1a8aa6;border-radius:3px;color:#eaf4ff}
+.good{color:#39ff14}.warn{color:#ffe14a}.bad{color:#ff6b8e}
+.ref a{color:#19f0ff}
+footer{color:#9fb4ff;font-size:12px}
+::-webkit-scrollbar{width:10px}::-webkit-scrollbar-track{background:#050818}::-webkit-scrollbar-thumb{background:#19f0ff}
+@media(max-width:900px){.layout{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><h1>Mars Rover Design Workshop</h1><p>Start with an empty platform, choose each component, and watch your rover take shape in 3D.</p></header>
+<main>
+  <div class="topbar">
+    <div class="identity"><label for="roverName">Rover name</label><input id="roverName" maxlength="28" value="Mars Explorer" placeholder="Enter rover name"><span class="muted">Shown on the rover plaque and in the report.</span></div>
+    <button id="resetAll" class="danger">Reset design</button>
+  </div>
+  <div class="layout">
+    <section>
+      <div class="catalog-head"><div><h2>Component Catalog</h2><div class="muted">Select a component to add or remove it. The rover starts with no components installed.</div></div><span class="muted" id="selectionCount">0 components</span></div>
+      <div id="catalog"></div>
+    </section>
+    <aside class="panel viewer">
+      <h2>3D Assembly Platform</h2>
+      <p class="muted">Drag to rotate the rover. Use the mouse wheel to zoom in and out.</p>
+      <div id="stage"><div class="stage-empty" id="emptyState"><div><strong>Empty Platform</strong>Select a chassis, wheels, and other components to start building your rover.</div></div></div>
+      <div class="viewer-tools">
+        <button id="homeView">Reset View</button><button id="wireframe">Wireframe View</button><button id="removeLast">Remove Last Component</button>
+      </div>
+      <div class="stats">
+        <div class="stat"><span>Estimated Mass</span><b id="mass">0 kg</b></div>
+        <div class="stat"><span>Device Power</span><b id="power">0 W</b></div>
+        <div class="stat"><span>Component Count</span><b id="count">0</b></div>
+        <div class="stat"><span>Mission Coverage</span><b id="coverage">0 / 6</b></div>
+      </div>
+      <div class="result"><b>Installed Components</b><div id="selectedParts" class="selected-list"><span class="muted">No components added yet.</span></div></div>
+      <div class="actions"><button class="primary" id="runCheck">Run Design Check</button><button id="downloadReport">Download Build Report</button><button class="primary" id="sendRover">Send to Mission Control (rover.json)</button></div>
+      <div id="engineering" class="result"><b>Awaiting Design</b><p class="muted">Add components, then run the check to identify conflicts and warnings.</p></div>
+      <div class="result"><b>NASA Reference & Comparison</b><div id="nasaMatch" class="muted">Add components to begin an approximate comparison.</div>
+        <div class="ref">References: <a href="https://science.nasa.gov/mission/mars-2020-perseverance/" target="_blank" rel="noopener">Perseverance</a> · <a href="https://science.nasa.gov/mission/msl-curiosity/" target="_blank" rel="noopener">Curiosity</a> · <a href="https://science.nasa.gov/mission/mer-spirit-opportunity/" target="_blank" rel="noopener">Spirit & Opportunity</a></div>
+        <details><summary>How are NASA references used?</summary><p class="muted">Some component forms and functions are inspired by systems documented on NASA rovers, including six-wheel mobility, cameras, the robotic arm, sample-handling tools, and power systems. This comparison is educational and approximate; it is not an official NASA endorsement. Any component marked as a “game concept” is not claimed to be installed on a specific rover.</p></details>
+      </div>
+      <footer>Mass and power values are illustrative game-balancing estimates, not manufacturing data or NASA specifications. This 3D model is conceptual; it is not CAD or an engineering simulation.</footer>
+    </aside>
+  </div>
+</main>
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+
+const data=[
+ {id:'chassis',title:'Chassis',icon:'▰',multi:false,desc:'Mounting base for systems and load distribution.',items:[
+  ['Small Chassis','box',32,0,'Compact size and lower mass.'],['Medium Chassis','box',55,0,'Balanced space for equipment.'],['Large Chassis','box',82,0,'More room for payloads.']]},
+ {id:'wheels',title:'Mobility & Wheels',icon:'◉',multi:false,desc:'Choose the wheel configuration and type.',items:[
+  ['4 Wheels','wheels4',24,12,'Four wheels distributed along both sides.'],['6 Wheels','wheels6',38,18,'Configuration inspired by NASA rovers.'],['6 Wheels with Rocker-Bogie','rocker',44,20,'Articulated suspension for traversing terrain.']]},
+ {id:'wheeltype',title:'Wheel Design',icon:'⦿',multi:false,desc:'Choose the wheel surface design.',items:[
+  ['Smooth Metal Wheel','smooth',12,1,'Metal disc with a defined hub.'],['Cleated Wheel','cleated',15,2,'Raised cleats improve traction.'],['Flexible Mesh Wheel','mesh',17,2,'Proposed design concept for the game.']]},
+ {id:'power',title:'Power Source',icon:'⚡',multi:false,desc:'Choose the primary power source.',items:[
+  ['Solar Panels','solar',16,0,'Deployable panels used on earlier rovers.'],['RTG Generator','rtg',42,0,'Radioisotope thermoelectric generator used by Curiosity and Perseverance.'],['Hybrid System','hybrid',50,0,'Game concept combining two power sources.']]},
+ {id:'battery',title:'Battery Unit',icon:'▣',multi:false,desc:'Energy storage and load management.',items:[
+  ['Small Battery','batteryS',7,0,'Illustrative small capacity.'],['Medium Battery','batteryM',13,0,'Medium capacity.'],['Large Battery','batteryL',22,0,'Greater mass and capacity.']]},
+ {id:'thermal',title:'Thermal Protection',icon:'♨',multi:false,desc:'Protect electronics from temperature extremes.',items:[
+  ['Basic Insulation','thermal',7,2,'Insulation layer around the equipment bay.'],['Advanced Insulation','thermalPlus',12,3,'Enhanced protection.'],['Insulation with Heater','heater',17,15,'Active heating that consumes power.']]},
+ {id:'dust',title:'Dust Protection',icon:'✥',multi:false,desc:'Protect sensitive components from dust.',items:[
+  ['Protective Covers','covers',4,1,'Covers for connectors and equipment.'],['Cleaning System','dustBrush',8,7,'Proposed cleaning mechanism for the game.']]},
+ {id:'cameras',title:'Cameras',icon:'◎',multi:true,desc:'Choose one or more cameras; each has a distinct position and appearance.',items:[
+  ['Navcams','navcam',4,5,'Navigation cameras mounted on the mast.'],['Hazcams','hazcam',3,4,'Hazard-avoidance cameras near the chassis.'],['Mastcam','mastcam',5,6,'Long-range color imaging.'],['MAHLI Microscopic Imager','mahli',4,5,'Close-up imaging of rocks and samples.'],['Panoramic Camera','pancam',5,5,'Panoramic imaging inspired by MER.']]},
+ {id:'arm',title:'Robotic Arm',icon:'⌁',multi:false,desc:'Articulated arm for reaching rocks and soil.',items:[
+  ['No Arm','noarm',0,0,'No arm installed.'],['Multi-Joint Robotic Arm','arm',24,10,'Shoulder, elbow, joints, and an end-effector mount.']]},
+ {id:'tools',title:'Arm Tools',icon:'⚒',multi:true,desc:'These tools require a robotic arm.',items:[
+  ['Gripper','gripper',2,2,'Grip and hold targets.'],['Scoop','scoop',3,2,'Collect surface soil.'],['Brush','brush',2,1,'Remove dust from surfaces.'],['Abrader','abrader',4,3,'Expose a fresh rock surface.'],['Drill','drill',8,9,'Drilling tool for collecting a rock sample.']]},
+ {id:'science',title:'Scientific Analysis Instruments',icon:'⌬',multi:true,desc:'Instruments for analyzing rocks, soil, and samples.',items:[
+  ['Chemical Spectrometer','spectrometer',8,10,'Analyze chemical composition.'],['Mineral Analyzer','mineral',9,12,'Identify minerals.'],['Soil Analyzer','soil',6,8,'Measure regolith properties.'],['Advanced Sample Analyzer','sampler',12,15,'Proposed analysis unit for the game.']]},
+ {id:'water',title:'Water & Subsurface Exploration',icon:'◈',multi:false,desc:'Sensing and detection instruments; they do not establish whether water is drinkable.',items:[
+  ['Hydrogen Sensor','hydrogen',7,7,'Detect hydrogen as a possible indicator of water.'],['Ground-Penetrating Radar','radar',12,10,'Detect buried layers and structures.'],['Radar + Hydrogen Sensor','radarHydro',17,15,'Combine two exploration indicators.']]},
+ {id:'samples',title:'Sample Collection & Storage',icon:'▤',multi:false,desc:'Collect and preserve samples for analysis or transport.',items:[
+  ['Sample Container','sampleBox',4,1,'Basic sample container.'],['Sealed Sample Tubes','sampleTubes',8,2,'Store separate samples; concept inspired by Perseverance.'],['Integrated Storage System','sampleCache',15,5,'Multi-sample storage.']]},
+ {id:'environment',title:'Environmental & Hazard Sensors',icon:'⌁',multi:true,desc:'Monitor conditions that affect the mission.',items:[
+  ['Radiation Sensor','radiation',5,3,'Measure radiation exposure.'],['Weather Station','weather',7,4,'Temperature, pressure, wind, and dust.'],['Seismic Sensor','seismic',6,3,'Game concept; not a standard instrument on these rovers.']]}
+];
+const ITEM_IMAGES={
+ chassis:['small_chassis','medium_chassis','large_chassis'],
+ wheels:['wheels_4','wheels_6','rocker_bogie'],
+ wheeltype:['smooth_wheel','cleated_wheel','mesh_wheel'],
+ power:['solar_panels','rtg_generator','hybrid_power'],
+ battery:['small_battery','medium_battery','large_battery'],
+ thermal:['basic_insulation','advanced_insulation','insulation_heater'],
+ dust:['protective_covers','cleaning_system'],
+ cameras:['navcams','hazcams','mastcam','mahli','pancam'],
+ arm:['no_arm','robotic_arm'],
+ tools:['gripper','scoop','brush','abrader','drill'],
+ science:['chemical_spectrometer','mineral_analyzer','soil_analyzer','advanced_sample_analyzer'],
+ water:['hydrogen_sensor','ground_radar','radar_hydrogen'],
+ samples:['sample_container','sealed_sample_tubes','integrated_storage'],
+ environment:['radiation_sensor','weather_station','seismic_sensor']
+};
+function itemThumb(secId,i,type){
+ const f=(ITEM_IMAGES[secId]||[])[i],fb=glyph(type);
+ if(!f)return fb;
+ return `<img src="assets/items/${f}.jpeg" alt="" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span style="display:none">${fb}</span>`;
+}
+const state={};
+const $=id=>document.getElementById(id);
+let scene,camera,renderer,controls,roverGroup,wire=false,lastAdded=null;
+const mats={
+ body:new THREE.MeshStandardMaterial({color:0xcfd9ee,metalness:.12,roughness:.9,flatShading:true}),
+ dark:new THREE.MeshStandardMaterial({color:0x151d4a,metalness:.08,roughness:.95,flatShading:true}),
+ metal:new THREE.MeshStandardMaterial({color:0x7f8fb8,metalness:.18,roughness:.85,flatShading:true}),
+ gold:new THREE.MeshStandardMaterial({color:0x19f0ff,metalness:.08,roughness:.9,flatShading:true}),
+ blue:new THREE.MeshStandardMaterial({color:0x1f4fa0,metalness:.08,roughness:.9,flatShading:true}),
+ glass:new THREE.MeshStandardMaterial({color:0x5af0ff,metalness:.05,roughness:.35,flatShading:true}),
+ white:new THREE.MeshStandardMaterial({color:0xeaf4ff,metalness:.05,roughness:.95,flatShading:true}),
+ orange:new THREE.MeshStandardMaterial({color:0x39ff14,metalness:.05,roughness:.95,flatShading:true})
+};
+function init3D(){
+ scene=new THREE.Scene();scene.background=new THREE.Color(0x070b24);scene.fog=new THREE.Fog(0x070b24,15,34);
+ camera=new THREE.PerspectiveCamera(42,1,.1,100);camera.position.set(7,6,9);
+ renderer=new THREE.WebGLRenderer({antialias:false,alpha:false});renderer.setPixelRatio(1);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.BasicShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;
+ renderer.domElement.style.imageRendering='pixelated';$('stage').appendChild(renderer.domElement);
+ controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.target.set(0,1,0);controls.minDistance=3;controls.maxDistance=18;
+ scene.add(new THREE.HemisphereLight(0xbfe6ff,0x1a1f5a,2.25));
+ const light=new THREE.DirectionalLight(0xcfeaff,2.5);light.position.set(-5,10,7);light.castShadow=true;light.shadow.mapSize.set(1024,1024);scene.add(light);
+ const ground=new THREE.Mesh(new THREE.CircleGeometry(13,12),new THREE.MeshStandardMaterial({color:0x0b1a4a,roughness:1,flatShading:true}));ground.rotation.x=-Math.PI/2;ground.position.y=-.08;ground.receiveShadow=true;scene.add(ground);
+ // Low-poly mesa silhouettes establish the reference image's layered Martian horizon.
+ const farMat=new THREE.MeshStandardMaterial({color:0x14206b,roughness:1,flatShading:true});
+ const midMat=new THREE.MeshStandardMaterial({color:0x1b2f8a,roughness:1,flatShading:true});
+ const nearMat=new THREE.MeshStandardMaterial({color:0x0f4a8a,roughness:1,flatShading:true});
+ const ridge=new THREE.Group();scene.add(ridge);
+ [[-7,1.0,-7,3.2,2.2,1.1],[-3.5,.8,-8,2.8,1.7,1.0],[0,1.1,-8.5,3.5,2.3,1.2],[4,1.0,-8,3.2,2.0,1.1],[7,1.3,-7,3.6,2.6,1.2]].forEach((v,i)=>{const m=new THREE.Mesh(new THREE.ConeGeometry(1,1,5),farMat);m.position.set(v[0],v[1],v[2]);m.scale.set(v[3],v[4],v[5]);m.rotation.y=i*.37;ridge.add(m)});
+ [[-6,.45,-4.8,2.2,1.0,.8],[-2,.55,-5.5,2.8,1.3,.9],[2.5,.45,-5.2,2.5,1.1,.8],[6,.6,-4.8,2.4,1.5,.9]].forEach((v,i)=>{const m=new THREE.Mesh(new THREE.ConeGeometry(1,1,5),midMat);m.position.set(v[0],v[1],v[2]);m.scale.set(v[3],v[4],v[5]);m.rotation.y=i*.5;ridge.add(m)});
+ const grid=new THREE.GridHelper(12,18,0x19f0ff,0x1a5f9a);grid.position.y=-.065;grid.material.transparent=true;grid.material.opacity=.18;scene.add(grid);
+ roverGroup=new THREE.Group();scene.add(roverGroup);
+ resize3D();window.addEventListener('resize',resize3D);
+ renderer.setAnimationLoop(()=>{controls.update();renderer.render(scene,camera)});
+}
+function resize3D(){if(!renderer)return;const w=$('stage').clientWidth,h=$('stage').clientHeight;renderer.setSize(Math.max(240,Math.floor(w*.62)),Math.max(160,Math.floor(h*.62)),false);renderer.domElement.style.width='100%';renderer.domElement.style.height='100%';camera.aspect=w/h;camera.updateProjectionMatrix()}
+function mesh(geo,mat,x,y,z,group=roverGroup){const m=new THREE.Mesh(geo,mat);m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;group.add(m);return m}
+function box(w,h,d,mat,x,y,z,group=roverGroup){return mesh(new THREE.BoxGeometry(w,h,d),mat,x,y,z,group)}
+function cyl(r1,r2,len,mat,x,y,z,rotZ=0,group=roverGroup){let m=mesh(new THREE.CylinderGeometry(r1,r2,len,32),mat,x,y,z,group);m.rotation.z=rotZ;return m}
+function sphere(r,mat,x,y,z,group=roverGroup){return mesh(new THREE.SphereGeometry(r,20,16),mat,x,y,z,group)}
+function beam(a,b,r,mat,group=roverGroup){let start=new THREE.Vector3(...a),end=new THREE.Vector3(...b),dir=new THREE.Vector3().subVectors(end,start);let m=mesh(new THREE.CylinderGeometry(r,r,dir.length(),14),mat,...start.clone().add(end).multiplyScalar(.5).toArray(),group);m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),dir.normalize());return m}
+function textSprite(text){const c=document.createElement('canvas');c.width=512;c.height=128;const ctx=c.getContext('2d');ctx.fillStyle='#0b1233';ctx.beginPath();ctx.roundRect(8,8,496,112,18);ctx.fill();ctx.strokeStyle='#19f0ff';ctx.lineWidth=8;ctx.stroke();ctx.fillStyle='#eaf4ff';ctx.font='bold 52px Arial';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(text.slice(0,24),256,65);const tex=new THREE.CanvasTexture(c);const s=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true}));s.scale.set(1.65,.42,1);s.position.set(0,.95,.68);return s}
+function chosen(id){const d=data.find(x=>x.id===id),v=state[id];if(v===undefined)return [];return d.multi?v.map(i=>d.items[i]):[d.items[v]]}
+function selected(){return data.flatMap(d=>chosen(d.id).map(o=>({section:d.id,name:o[0],type:o[1],mass:o[2],watts:o[3],desc:o[4]})))}
+function clearGroup(g){while(g.children.length){const o=g.children.pop();if(o.geometry)o.geometry.dispose();if(o.material&&o.material.dispose)o.material.dispose()}}
+function buildRover(){
+ clearGroup(roverGroup);
+ const parts=selected(),has=id=>chosen(id).length>0,find=id=>chosen(id)[0],body=find('chassis'),wheels=find('wheels'),wheeltype=find('wheeltype');
+ if(!parts.length){$('emptyState').style.display='grid';updateStats();return}
+ $('emptyState').style.display='none';
+ // Main chassis only appears after user adds it.
+ if(body){
+  const size=body[1]==='box'?(body[0].includes('Small')?[1.5,.42,1.1]:body[0].includes('Large')?[2.3,.58,1.55]:[1.9,.5,1.3]):[1.9,.5,1.3];
+  box(...size,mats.body,0,1.05,0);
+  box(size[0]*.72,.09,size[2]*.82,mats.dark,0,1.34,0);
+  // visible identity plaque
+  box(.95,.24,.045,mats.dark,0,1.05,size[2]/2+.026);
+  const label=textSprite($('roverName').value.trim()||'Rover');label.position.set(0,1.08,size[2]/2+.09);label.scale.set(1.45,.36,1);roverGroup.add(label);
+  // thermal cover / dust covers
+  if(has('thermal')){box(size[0]*.48,.08,size[2]*.55,mats.white,0,1.38,0)}
+  if(has('dust')){for(const x of [-.55,.55])box(.18,.12,size[2]*.65,mats.orange,x,1.36,0)}
+ }
+ // Wheel positions and suspension
+ if(wheels){
+  const n=wheels[1]==='wheels4'?4:6, xs=n===4?[-.9,-.9,.9,.9]:[-1.05,0,1.05,-1.05,0,1.05],zs=n===4?[-.78,.78,-.78,.78]:[-.78,-.92,-.78,.78,.92,.78];
+  for(let i=0;i<n;i++){
+   const x=xs[i],z=zs[i],r=.36;
+   if(wheels[1]==='rocker')beam([x*.8,.55,z*.8],[x,.5,z],.075,mats.metal);
+   const tireMat=wheeltype?.[1]==='mesh'?mats.metal:mats.dark;
+   let tire=mesh(new THREE.CylinderGeometry(r,r,.22,32),tireMat,x,.48,z);tire.rotation.z=Math.PI/2;
+   let hub=mesh(new THREE.CylinderGeometry(.16,.16,.235,24),mats.gold,x,.48,z);hub.rotation.z=Math.PI/2;
+   if(wheeltype?.[1]==='cleated'){for(let k=0;k<12;k++){let a=k*Math.PI/6;let lug=box(.12,.09,.28,mats.metal,x+Math.cos(a)*r,.48+Math.sin(a)*r,z);lug.rotation.x=a}}
+   if(wheeltype?.[1]==='mesh'){for(let k=0;k<8;k++){let a=k*Math.PI/4;beam([x+Math.cos(a)*.23,.48+Math.sin(a)*.23,z-.1],[x+Math.cos(a)*.23,.48+Math.sin(a)*.23,z+.1],.018,mats.white)}}
+  }
+ }
+ if(has('power')){
+  const p=find('power')[1];
+  if(p==='solar'||p==='hybrid'){
+   for(const side of [-1,1]){box(.9,.045,.62,mats.blue,side*1.45,1.35,0);for(let k=0;k<4;k++)box(.012,.05,.62,mats.glass,side*1.45-.34+k*.22,1.38,0)}
+   beam([-.8,1.1,0],[-1.1,1.3,0],.035,mats.metal);beam([.8,1.1,0],[1.1,1.3,0],.035,mats.metal);
+  }
+  if(p==='rtg'||p==='hybrid'){cyl(.25,.25,.55,mats.dark,1.22,1.05,-.12,Math.PI/2);for(let k=0;k<5;k++)cyl(.29,.29,.025,mats.gold,1.22,1.05,-.32+k*.1,Math.PI/2)}
+ }
+ if(has('battery')){const b=find('battery');box(.48,.28,.42,mats.dark,-.35,1.48,-.15);box(.3,.04,.03,mats.gold,-.35,1.64,.07)}
+ if(has('cameras')){
+  const cams=chosen('cameras');const mast=cams.some(c=>['navcam','mastcam','pancam'].includes(c[1]));
+  if(mast){beam([0,1.45,0],[0,2.25,0],.055,mats.metal);box(.55,.2,.22,mats.dark,0,2.32,0)}
+  cams.forEach((c,i)=>{const t=c[1];if(t==='navcam'||t==='mastcam'||t==='pancam'){const x=(i-(cams.length-1)/2)*.17;sphere(.095,mats.glass,x,2.32,.13);cyl(.12,.12,.08,mats.dark,x,2.32,.02,Math.PI/2)}
+   else if(t==='hazcam'){for(const z of [-.62,.62]){box(.18,.14,.08,mats.dark,-.55,.9,z);sphere(.055,mats.glass,-.55,.9,z+.05)}}
+   else if(t==='mahli'){beam([.65,1.35,.35],[.78,1.15,.48],.05,mats.metal);sphere(.11,mats.glass,.78,1.15,.5)}
+  });
+ }
+ if(has('arm')&&find('arm')[1]==='arm'){
+  beam([.72,1.1,.48],[1.15,1.35,.58],.09,mats.metal);sphere(.13,mats.gold,1.15,1.35,.58);
+  beam([1.15,1.35,.58],[1.38,.85,.72],.075,mats.metal);sphere(.11,mats.gold,1.38,.85,.72);
+  beam([1.38,.85,.72],[1.6,.62,.8],.06,mats.metal);
+  if(has('tools')){const tool=chosen('tools')[0][1];if(tool==='gripper'){beam([1.6,.62,.8],[1.72,.5,.8],.035,mats.dark);beam([1.72,.5,.8],[1.8,.42,.72],.025,mats.metal);beam([1.72,.5,.8],[1.8,.42,.88],.025,mats.metal)}
+   if(tool==='scoop'){mesh(new THREE.SphereGeometry(.16,16,10,0,Math.PI*2,0,Math.PI/2),mats.metal,1.68,.48,.8)}
+   if(tool==='brush'){for(let k=0;k<7;k++)beam([1.58+k*.025,.5,.74],[1.58+k*.025,.38,.74],.012,mats.orange)}
+   if(tool==='drill'||tool==='abrader'){cyl(.07,.035,.35,mats.metal,1.67,.43,.8);}}
+ }
+ // Science modules as distinct instrument housings
+ chosen('science').forEach((s,i)=>{const x=-.55+i*.36;box(.25,.22,.28,mats.white,x,1.48,-.35);cyl(.075,.075,.08,s[1]==='mineral'?mats.gold:mats.dark,x,1.61,-.35);});
+ if(has('water')){const t=find('water')[1];if(t==='radar'||t==='radarHydro'){box(.48,.08,.34,mats.dark,-.75,.77,.35);for(let i=0;i<3;i++)beam([-.9+i*.15,.72,.3],[-.9+i*.15,.45,.3],.018,mats.gold)}if(t==='hydrogen'||t==='radarHydro'){sphere(.12,mats.glass,.6,1.55,-.25);box(.2,.16,.2,mats.dark,.6,1.42,-.25)}}
+ if(has('samples')){const t=find('samples')[1];box(t==='sampleCache'?.55:.36,.25,.35,mats.white,-.55,1.45,.35);for(let i=0;i<(t==='sampleTubes'?3:1);i++)cyl(.055,.055,.2,mats.gold,-.68+i*.13,1.64,.35)}
+ chosen('environment').forEach((e,i)=>{const x=.35+i*.3;box(.2,.16,.2,e[1]==='radiation'?mats.orange:mats.dark,x,1.55,-.4);if(e[1]==='weather')beam([x,1.63,-.4],[x,1.95,-.4],.025,mats.metal);if(e[1]==='seismic')sphere(.1,mats.gold,x,1.68,-.4)});
+}
+function updateStats(){
+ const parts=selected(),mass=parts.reduce((a,p)=>a+p.mass,0),watts=parts.reduce((a,p)=>a+p.watts,0);
+ $('mass').textContent=mass+' kg';$('power').textContent=watts+' W';$('count').textContent=parts.length;$('selectionCount').textContent=parts.length+' components';
+ const missions=[hasAny('cameras'),hasAny('water'),hasAny('science'),hasAny('environment'),hasAny('samples'),hasAny('wheels')&&hasAny('chassis')];
+ $('coverage').textContent=missions.filter(Boolean).length+' / 6';
+ $('selectedParts').innerHTML=parts.length?parts.map((p,i)=>`<span class="chip">${p.name}<button title="Remove" data-remove="${p.section}:${p.name}">×</button></span>`).join(''):'<span class="muted">No components added yet.</span>';
+ $('selectedParts').querySelectorAll('[data-remove]').forEach(b=>b.onclick=()=>removePart(b.dataset.remove));
+}
+function hasAny(id){return chosen(id).length>0}
+function removePart(key){const [id,name]=key.split(':');const d=data.find(x=>x.id===id);if(!d)return;const ix=d.items.findIndex(x=>x[0]===name);if(d.multi)state[id]=(state[id]||[]).filter(i=>i!==ix);else delete state[id];refresh()}
+function refresh(){renderCatalog();buildRover();updateStats();updateNasa()}
+function renderCatalog(){
+ const host=$('catalog');host.innerHTML='';
+ data.forEach((d,idx)=>{const sec=document.createElement('section');sec.className='category';sec.innerHTML=`<div class="cathead"><div class="cat-icon">${d.icon}</div><div><h3>${idx+1}. ${d.title}</h3><div class="muted">${d.desc}</div></div><span class="muted">${d.multi?'Multiple':'Single selection'}</span></div><div class="opts"></div>`;
+ const grid=sec.querySelector('.opts');
+ d.items.forEach((o,i)=>{const active=d.multi?(state[d.id]||[]).includes(i):state[d.id]===i;const el=document.createElement('button');el.type='button';el.className='opt'+(active?' selected':'');el.setAttribute('aria-pressed',active?'true':'false');el.innerHTML=`<span class="glyph">${itemThumb(d.id,i,o[1])}</span><strong>${o[0]}</strong><small>${o[4]}</small><span class="meta">${o[2]} kg · ${o[3]} W</span>`;el.onclick=()=>{if(d.multi){let a=state[d.id]||[];state[d.id]=active?a.filter(x=>x!==i):[...a,i];if(!state[d.id].length)delete state[d.id]}else{if(active)delete state[d.id];else state[d.id]=i}lastAdded={id:d.id,index:i};refresh()};grid.appendChild(el)});
+ host.appendChild(sec)});
+}
+function glyph(type){return ({box:'▰',wheels4:'◉ ◉',wheels6:'◉ ◉ ◉',rocker:'⌁ ◉',smooth:'◉',cleated:'✥',mesh:'▧',solar:'▤',rtg:'▣',hybrid:'⚡',batteryS:'▣',batteryM:'▣',batteryL:'▣',thermal:'♨',thermalPlus:'♨',heater:'♨',covers:'⬡',dustBrush:'✣',navcam:'◎',hazcam:'◉',mastcam:'◉',mahli:'⌕',pancam:'◉',noarm:'—',arm:'⌁',gripper:'⚒',scoop:'⌑',brush:'☷',abrader:'⌁',drill:'↧',spectrometer:'⌬',mineral:'◇',soil:'▦',sampler:'▣',hydrogen:'H₂',radar:'⌁',radarHydro:'◈',sampleBox:'▤',sampleTubes:'▥',sampleCache:'▦',radiation:'☢',weather:'☼',seismic:'∿'})[type]||'◇'}
+function updateNasa(){
+ const parts=selected();if(!parts.length){$('nasaMatch').textContent='Add components to begin an approximate comparison.';return}
+ const profiles={
+ 'Sojourner':{wheels:'6 Wheels',power:'Solar Panels',cams:['Navcams'],arm:false},
+ 'Spirit / Opportunity':{wheels:'6 Wheels',power:'Solar Panels',cams:['Navcams','Panoramic Camera'],arm:true},
+ 'Curiosity':{wheels:'6 Wheels',power:'RTG Generator',cams:['Navcams','Hazcams','Mastcam','MAHLI Microscopic Imager'],arm:true},
+ 'Perseverance':{wheels:'6 Wheels',power:'RTG Generator',cams:['Navcams','Hazcams','Mastcam','MAHLI Microscopic Imager'],arm:true,samples:true}
+ };
+ const chosenNames=parts.map(p=>p.name);
+ const scores=Object.entries(profiles).map(([name,p])=>{let score=0,total=0;const w=chosen('wheels')[0];if(w){total++;if(w[0].includes('6 Wheels'))score++}const power=chosen('power')[0];if(power){total++;if(power[0]===p.power)score++}if(hasAny('arm')){total++;if((chosen('arm')[0][1]==='arm')===p.arm)score++}const cams=chosen('cameras').map(x=>x[0]);if(cams.length){total++;score+=cams.filter(x=>p.cams.includes(x)).length/Math.max(cams.length,p.cams.length)}if(hasAny('samples')){total++;if(p.samples)score++}return {name,percent:total?Math.round(score/total*100):0}}).sort((a,b)=>b.percent-a.percent);
+ $('nasaMatch').innerHTML=`Closest configuration in this comparison: <b>${scores[0].name}</b> — ${scores[0].percent}% initial similarity.<br><span class="muted">This comparison uses only some selected categories; it does not mean the design is identical to or approved by NASA.</span>`;
+}
+function checkDesign(){
+ const issues=[],warnings=[],parts=selected(),get=id=>chosen(id)[0];
+ if(!get('chassis'))issues.push('Add a chassis; other systems cannot be mounted without it.');
+ if(!get('wheels'))warnings.push('No mobility or wheel system has been selected.');
+ if(!get('power'))issues.push('Choose a power source.');
+ if(!get('battery'))warnings.push('No battery unit has been selected.');
+ if(hasAny('tools')&&(!get('arm')||get('arm')[1]==='noarm'))issues.push('Arm tools are selected, but no robotic arm is installed.');
+ if(get('samples')&&!hasAny('tools'))warnings.push('The storage system cannot collect samples by itself; add a suitable collection or drilling tool.');
+ if(get('power')?.[1]==='solar'&&parts.reduce((a,p)=>a+p.watts,0)>35)warnings.push('The electrical load is relatively high for the illustrative solar-power option.');
+ if(!hasAny('cameras'))warnings.push('No cameras are installed; navigation and visual documentation capabilities are limited.');
+ if(!hasAny('science'))warnings.push('No scientific analysis instruments have been selected.');
+ if(!hasAny('water'))warnings.push('No instrument for water or subsurface exploration has been selected.');
+ if(!hasAny('environment'))warnings.push('No environmental or hazard-monitoring instruments have been selected.');
+ const status=issues.length?'Needs Revision':warnings.length?'Provisionally Acceptable with Warnings':'Passed the Preliminary Rules Check';
+ $('engineering').innerHTML=`<div class="status ${issues.length?'bad':warnings.length?'warn':'good'}">${status}</div><p class="muted">Mass: ${parts.reduce((a,p)=>a+p.mass,0)} kg · Device power: ${parts.reduce((a,p)=>a+p.watts,0)} W</p>${issues.map(x=>`<p class="bad">✕ ${x}</p>`).join('')}${warnings.map(x=>`<p class="warn">! ${x}</p>`).join('')}${!issues.length&&!warnings.length?'<p class="good">✓ No conflicts were found under the current check rules.</p>':''}<details><summary>Check Limitations</summary><p class="muted">This is an educational logic check for compatibility and system completeness. It does not perform stress, stability, mobility, or detailed power-budget simulations, and it is not an engineering certification.</p></details>`;
+}
+function report(){
+ const parts=selected(),name=$('roverName').value.trim()||'Unnamed Rover';
+ const lines=['MARS ROVER CONFIGURATION REPORT','Rover name: '+name,'Estimated mass: '+parts.reduce((a,p)=>a+p.mass,0)+' kg','Estimated device power: '+parts.reduce((a,p)=>a+p.watts,0)+' W','','SELECTED COMPONENTS',...parts.map(p=>`${p.section}: ${p.name} — ${p.desc}`),'','NASA references are educational design references only.','Mass and power values are illustrative game-balancing estimates, not NASA specifications.'];
+ const blob=new Blob([lines.join('\n')],{type:'text/plain;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=(name.replace(/[^\w\u0600-\u06FF-]+/g,'_')||'Mars_Rover')+'_Configuration.txt';a.click();URL.revokeObjectURL(url);
+}
+$('roverName').addEventListener('input',()=>{buildRover()});
+$('resetAll').onclick=()=>{Object.keys(state).forEach(k=>delete state[k]);lastAdded=null;$('engineering').innerHTML='<b>Awaiting Design</b><p class="muted">Add components, then run the check.</p>';refresh()};
+$('homeView').onclick=()=>{camera.position.set(7,6,9);controls.target.set(0,1,0);controls.update()};
+$('wireframe').onclick=()=>{wire=!wire;Object.values(mats).forEach(m=>m.wireframe=wire);$('wireframe').textContent=wire?'Exit Wireframe View':'Wireframe View'};
+$('removeLast').onclick=()=>{if(!lastAdded)return;const d=data.find(x=>x.id===lastAdded.id);if(d.multi){state[d.id]=(state[d.id]||[]).filter(i=>i!==lastAdded.index);if(!state[d.id].length)delete state[d.id]}else delete state[d.id];lastAdded=null;refresh()};
+$('runCheck').onclick=checkDesign;$('downloadReport').onclick=report;
+
+function exportRover(){
+ const parts=selected();if(!parts.length){alert('Add components before sending the rover to Mission Control.');return}
+ const rover={schema:'mars-rover-v1',name:$('roverName').value.trim()||'Unnamed Rover',parts};
+ const txt=JSON.stringify(rover,null,1);
+ try{localStorage.setItem('marsRoverDesign',txt)}catch(e){}
+ const blob=new Blob([txt],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='rover.json';a.click();URL.revokeObjectURL(url);
+}
+$('sendRover').onclick=exportRover;
+init3D();renderCatalog();buildRover();updateStats();updateNasa();
+</script>
+</body>
+</html>

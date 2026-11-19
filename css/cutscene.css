@@ -1,0 +1,273 @@
+/* ==========================================================================
+   CUTSCENE ENGINE STYLES — MISSION FAILED (NPC Masr)
+   Cinematic Presentation & Multi-Stage Story Narration
+   ========================================================================== */
+
+.cutscene-viewport {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: #04070D;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+/* Background Image Layer */
+.cutscene-bg-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  transition: opacity 0.5s ease-in-out, transform 6s ease-out;
+  transform: scale(1.02);
+  z-index: 1;
+}
+
+/* Themed Fallback Gradient when image is missing */
+.cutscene-bg-fallback {
+  position: absolute;
+  inset: 0;
+  background: 
+    radial-gradient(ellipse at 50% 40%, rgba(217, 93, 57, 0.28) 0%, transparent 70%),
+    radial-gradient(circle at 20% 20%, rgba(0, 240, 255, 0.12) 0%, transparent 50%),
+    linear-gradient(to bottom, #04070D 0%, #0D1526 50%, #150A0E 100%);
+  z-index: 0;
+}
+
+/* Vignette & Cinematic Dark Overlay */
+.cutscene-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(7, 11, 20, 0.2) 0%, rgba(7, 11, 20, 0.88) 100%),
+              linear-gradient(to top, rgba(7, 11, 20, 0.98) 0%, rgba(7, 11, 20, 0.4) 40%, transparent 100%);
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Top Cutscene Bar (Stage tag, Audio control, Skip) */
+.cutscene-top-bar {
+  position: absolute;
+  top: 16px;
+  left: 20px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 20;
+}
+
+.cutscene-stage-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(16, 24, 39, 0.85);
+  border: 1px solid var(--border-line);
+  padding: 6px 14px;
+  border-radius: 4px;
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  color: var(--neon-cyan);
+  text-transform: uppercase;
+  backdrop-filter: blur(6px);
+}
+
+.cutscene-top-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cutscene-icon-btn {
+  background: rgba(16, 24, 39, 0.85);
+  border: 1px solid var(--border-panel);
+  color: var(--text-muted);
+  width: 36px;
+  height: 36px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  backdrop-filter: blur(6px);
+  font-size: 14px;
+}
+
+.cutscene-icon-btn:hover {
+  border-color: var(--neon-cyan);
+  color: var(--neon-cyan);
+}
+
+.cutscene-skip-btn {
+  background: rgba(16, 24, 39, 0.85);
+  border: 1px solid var(--border-panel);
+  color: var(--amber);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  letter-spacing: 1px;
+  backdrop-filter: blur(6px);
+}
+
+.cutscene-skip-btn:hover {
+  background: var(--amber);
+  color: var(--bg-main);
+  box-shadow: 0 0 12px var(--amber-glow);
+}
+
+/* Cinematic Bottom Dialogue / Narration Panel */
+.cutscene-narrative-container {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 1080px;
+  margin: 0 auto 28px;
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cutscene-card {
+  background: rgba(13, 21, 38, 0.92);
+  border: 1px solid var(--border-line);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(0, 240, 255, 0.04);
+  border-radius: 8px;
+  padding: 22px 28px;
+  backdrop-filter: blur(12px);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Progress Tracker Bar */
+.cutscene-progress-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cutscene-progress-bar-track {
+  flex: 1;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.cutscene-progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--neon-cyan) 0%, var(--amber) 100%);
+  width: 33%;
+  transition: width 0.35s ease;
+}
+
+.cutscene-slide-counter {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+  flex-shrink: 0;
+}
+
+/* Slide Content */
+.cutscene-slide-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.cutscene-slide-title {
+  font-family: var(--font-display);
+  font-size: clamp(16px, 2.5vw, 22px);
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  color: var(--neon-cyan);
+  text-transform: uppercase;
+}
+
+.cutscene-slide-text {
+  font-size: clamp(13px, 1.8vw, 15px);
+  line-height: 1.7;
+  color: var(--text-primary);
+  min-height: 52px;
+}
+
+/* Bottom Nav Buttons (Prev, Audio indicator, Next) */
+.cutscene-actions-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 14px;
+  margin-top: 4px;
+}
+
+.cutscene-nav-btn {
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 8px 18px;
+  border-radius: 4px;
+  cursor: pointer;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-cutscene-prev {
+  background: transparent;
+  border: 1px solid var(--border-panel);
+  color: var(--text-muted);
+}
+
+.btn-cutscene-prev:hover:not(:disabled) {
+  border-color: var(--text-primary);
+  color: var(--text-primary);
+}
+
+.btn-cutscene-prev:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.btn-cutscene-next {
+  background: var(--neon-cyan);
+  border: 1px solid var(--neon-cyan);
+  color: var(--bg-main);
+  box-shadow: 0 0 12px var(--neon-cyan-glow);
+}
+
+.btn-cutscene-next:hover {
+  background: #FFF;
+  border-color: #FFF;
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.6);
+  transform: translateY(-1px);
+}
+
+.cutscene-audio-cue {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+.cutscene-audio-cue.playing {
+  color: var(--emerald);
+}

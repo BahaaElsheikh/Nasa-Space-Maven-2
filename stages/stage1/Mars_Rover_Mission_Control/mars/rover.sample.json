@@ -1,0 +1,11 @@
+{"schema":"mars-rover-v1","name":"Sample Rover","parts":[
+{"section":"chassis","name":"Medium Chassis","type":"box","mass":55,"watts":0},
+{"section":"wheels","name":"6 Wheels with Rocker-Bogie","type":"rocker","mass":44,"watts":20},
+{"section":"wheeltype","name":"Cleated Wheel","type":"cleated","mass":15,"watts":2},
+{"section":"power","name":"Hybrid System","type":"hybrid","mass":50,"watts":0},
+{"section":"battery","name":"Medium Battery","type":"batteryM","mass":13,"watts":0},
+{"section":"thermal","name":"Insulation with Heater","type":"heater","mass":17,"watts":15},
+{"section":"cameras","name":"Navcams","type":"navcam","mass":4,"watts":5},
+{"section":"cameras","name":"Hazcams","type":"hazcam","mass":3,"watts":4},
+{"section":"science","name":"Chemical Spectrometer","type":"spectrometer","mass":8,"watts":10},
+{"section":"water","name":"Hydrogen Sensor","type":"hydrogen","mass":7,"watts":7}]}
